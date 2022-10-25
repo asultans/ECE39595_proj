@@ -14,7 +14,7 @@ public:
   static Inst_buff *getInst_buff();
   std::vector<Stmt *> buff;
   virtual ~Inst_buff();
-
+  void printBuff();
   Inst_buff();
 
 private:

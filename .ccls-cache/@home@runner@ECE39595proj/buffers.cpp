@@ -13,6 +13,17 @@ Inst_buff *Inst_buff::getInst_buff() {
   return uniqueBuff;
 }
 
+void Inst_buff::PrintBuff(){
+  for(Stmt * i : inst_buff->buff){
+        std::cout << i->
+
+          }    
+};
+
+
+
+
+
 Str_buff *Str_buff::uniqueBuff = nullptr;
 
 // PRIVATE constructor:
@@ -25,6 +36,9 @@ Str_buff *Str_buff::getStr_buff() {
   }
   return uniqueBuff;
 }
+
+
+
 
 Inst_buff::~Inst_buff(){};
 Str_buff::~Str_buff(){};

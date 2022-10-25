@@ -1,13 +1,14 @@
 #ifndef STMT_H
 #define STMT_H
-
+#include <fstream>
 class Stmt {
   public:
     Stmt() {};
     virtual ~Stmt() {};
-    // bool is_initialized;
+    virtual void printData();
+    // bool is_initialized = false;
     // virtual void initialize(Symtbl* sym) = 0;
-    // virtual void serialize(std::ofstream aout_file) = 0;   
+    // virtual void serialize(char * aout_file);
 };
 
 #endif

@@ -53,24 +53,27 @@ int main(int argc, char *argv[]) {
 
     //START OPS.H ADDED
     if (line.compare("start") == 0) {
-      Stmt * st = new Start();
-      inst_buff->buff.push_back(st);
+      Stmt * start = new Start();
+      inst_buff->buff.push_back(start);
 
     } 
     //END OPS.H ADDED
     else if (line.compare("end") == 0) {
+      Stmt * end = new End();
+      inst_buff->buff.push_back(end);
       
-      // Reached END. PRINT SERIALIZE
-      //
-      // for(std::unique_ptr<Stmt> i : inst_buff->buff){
-      //   if (!i->is_initialized){
-      //     i->serialize(argv[2]);
-      //   }
-      // }
+      //Reached END. PRINT SERIALIZE
+      
+      for(Stmt * i : inst_buff->buff){
+        if (!i->is_initialized){
+          i->serialize(argv[2]);
+        }
+      }
     } 
 
     else if (line.compare("exit") == 0) {
-      
+      Stmt * exit = new Exit();
+      inst_buff->push_back(exit);
       //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
       //Also fill in all jumps and gosubs
       // int startmem = sym->getMemory("Global");

@@ -2,6 +2,7 @@
 #define OPS_H
 
 #include "buffers.h"
+#include "Stmt.h"
 #include <iostream>
 
 
@@ -18,6 +19,10 @@ public:
   Jump(std::string jm);
   std::string jm;
   int op_add = 16;
+  virtual void printData();
+  virtual void serialize(std::ofstream aout_file) {
+    
+  };
 };
 
 // jmpzero
@@ -26,7 +31,8 @@ private:
 public:
 std::string jmp_z;
 Jumpzero(std::string jmp_z);
-  int op_add = 17;
+virtual void printData();
+int op_add = 17;
 };
 
 // jmpnzro
@@ -36,6 +42,7 @@ public:
   std::string jmp_n;
   Jump_n(std::string jmp_n);
   int op_add = 18;
+  virtual void printData();
 };
 
 // gosub label
@@ -45,6 +52,7 @@ public:
   std::string name;
   gslabel(std::string name);
   int op_add = 19;
+  virtual void printData();
   // virtual TYPE sym_add(std::string label, double loc);
   // virtual TYPE instr_add();
 };
@@ -55,6 +63,7 @@ private:
 public:
   Ret();
   int op_add = 20;
+  virtual void printData();
 };
 
 //  ent_sub is GO_SUB
@@ -64,14 +73,7 @@ public:
   Ent_sub(std::string label);
   std::string label;
   int op_add = 21;
-};
-
-//  exit_sub
-class Exit_sub : public Stmt {
-private:
-public:
-  Exit_sub();
-  int op_add = 22;
+  virtual void printData();
 };
 
 //  start
@@ -81,6 +83,7 @@ private:
 public:
   int mem = 0;
   Start();
+  virtual void printData();
   int op_add = 23;
 };
 
@@ -89,6 +92,7 @@ class Exit : public Stmt {
 private:
 public:
   Exit();
+  void printData();
   int op_add = 22;
 };
 
@@ -98,6 +102,7 @@ private:
 public:
   std::string name;
   Push_scl(std::string name);
+  void printData();
   int op_add = 32;
 };
 
@@ -105,9 +110,11 @@ public:
 class Push_arr : public Stmt {
 private:
 public:
-  Push_arr(std::string name);
+  Push_arr(std::string name_, int loc_);
+  void printData();
   std::string name;
   int op_add = 33;
+  int loc;
 };
 
 //  push_i
@@ -116,6 +123,7 @@ private:
 public:
   // maybe change to digit? current serialize works with string so maybe dont change
   std::string i;
+  void printData();
   Push_i(std::string i);
   int op_add = 34;
 };
@@ -125,6 +133,7 @@ class Pop_scl : public Stmt {
 private:
 public:
   std::string name;
+  void printData();
   Pop_scl(std::string name);
   int op_add = 48;
 };
@@ -134,6 +143,7 @@ class Pop_arr : public Stmt {
 private:
 public:
   std::string name;
+  void printData();
   Pop_arr(std::string name);
   int op_add = 49;
 };
@@ -142,6 +152,7 @@ public:
 class Pop : public Stmt {
 private:
 public:
+  void printData();
   Pop();
   int op_add = 50;
 };
@@ -151,6 +162,7 @@ class Dup : public Stmt {
 private:
 public:
   Dup();
+  void printData();
   int op_add = 64;
 };
 
@@ -159,6 +171,7 @@ class Swap : public Stmt {
 private:
 public:
   Swap();
+  void printData();
   int op_add = 65;
 };
 
@@ -167,6 +180,7 @@ class Add : public Stmt {
 private:
 public:
   Add();
+  void printData();
   int op_add = 80;
 };
 
@@ -175,6 +189,7 @@ class Negate : public Stmt {
 private:
 public:
   Negate();
+  void printData();
   int op_add = 81;
 };
 
@@ -183,6 +198,7 @@ class Mul : public Stmt {
 private:
 public:
   Mul();
+  void printData();
   int op_add = 82;
 };
 
@@ -191,6 +207,7 @@ class Div : public Stmt {
 private:
 public:
   Div();
+  void printData();
   int op_add = 83;
 };
 
@@ -200,6 +217,7 @@ private:
 public:
   std::string printed;
   Prints(std::string printed);
+  void printData();
   int op_add = 96;
 };
 
@@ -209,6 +227,7 @@ private:
 public:
   Printtos();
   int op_add = 97;
+  void printData();
 };
 
 #endif

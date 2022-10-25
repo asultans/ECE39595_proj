@@ -1,4 +1,5 @@
 #include "Symtbl.h"
+
 #include "ops.h"
 #include <algorithm>
 #include <fstream>
@@ -53,16 +54,16 @@ int main(int argc, char *argv[]) {
 
     //START OPS.H ADDED
     if (line.compare("start") == 0) {
-      Stmt * st = new Start();
-      inst_buff->buff.push_back(st);
+      Stmt * start = new Start();
+      inst_buff->buff.push_back(start);
 
     } 
     //END OPS.H ADDED
     else if (line.compare("end") == 0) {
+      //DONT CREATE STMT
+      //Reached END. PRINT SERIALIZE
       
-      // Reached END. PRINT SERIALIZE
-      //
-      // for(std::unique_ptr<Stmt> i : inst_buff->buff){
+      // for(Stmt * i : inst_buff->buff){
       //   if (!i->is_initialized){
       //     i->serialize(argv[2]);
       //   }
@@ -70,7 +71,8 @@ int main(int argc, char *argv[]) {
     } 
 
     else if (line.compare("exit") == 0) {
-      
+      Stmt * exit = new Exit();
+      inst_buff->buff.push_back(exit);
       //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
       //Also fill in all jumps and gosubs
       // int startmem = sym->getMemory("Global");
@@ -84,8 +86,6 @@ int main(int argc, char *argv[]) {
       //     i->initialize(sym);
       //   }
       // }
-      Stmt * exit = new Exit();
-      
     } 
     
     else if (line.compare("return") == 0) {
