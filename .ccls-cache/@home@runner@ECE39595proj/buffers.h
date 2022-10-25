@@ -12,7 +12,7 @@
 class Inst_buff {
 public:
   static Inst_buff *getInst_buff();
-  std::vector<std::unique_ptr<Stmt>> buff;
+  std::vector<Stmt *> buff;
   ~Inst_buff();
 
   Inst_buff();
