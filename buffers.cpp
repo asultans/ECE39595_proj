@@ -1,9 +1,5 @@
 #include "buffers.h"
 
-#include <iostream>
-#include <map>
-#include <string>
-
 Inst_buff *Inst_buff::uniqueBuff = nullptr;
 
 // PRIVATE constructor:

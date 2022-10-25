@@ -1,6 +1,5 @@
 #include "Symtbl.h"
-//#include "ops.h"
-#include "Stmt.h"
+#include "ops.h"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -22,7 +21,7 @@ int main(int argc, char *argv[]) {
   string line;
   fstream fl;
   Symtbl *sym = Symtbl::getSymbolTable();
-  Inst_buff *inst_buff = Inst_buff::getInst_buff();
+  //Inst_buff *inst_buff = Inst_buff::getInst_buff();
   Str_buff *str_buff = Str_buff::getStr_buff();
   
   // Instantiate Scope
@@ -52,217 +51,246 @@ int main(int argc, char *argv[]) {
   while (getline(fl, line)) {
     printf("in loop\n");
 
+    //START OPS.H ADDED
     if (line.compare("start") == 0) {
-      // printf("start\n");
-      inst_buff->buff.push_back(std::make_unique<Stmt>(23, false, -1, "none", "none", sym->getMemory(scope.front()),"none"));
-
-    } else if (line.compare("end") == 0) {
+      Stmt * st = new Start();
       
 
-      for(std::unique_ptr<Stmt> i : inst_buff->buff){
-        if (!i->is_initialized){
-          i->serialize(argv[2]);
-        }
-      }
     } 
-    
+    //END OPS.H ADDED
+    else if (line.compare("end") == 0) {
+      
+      // Reached END. PRINT SERIALIZE
+      //
+      // for(std::unique_ptr<Stmt> i : inst_buff->buff){
+      //   if (!i->is_initialized){
+      //     i->serialize(argv[2]);
+      //   }
+      // }
+    } 
+
     else if (line.compare("exit") == 0) {
+      
       //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
       //Also fill in all jumps and gosubs
-      int startmem = sym->getMemory("Global");
-      inst_buff->buff.front()->mem = startmem;
-      inst_buff->buff.front()->is_initialized = true;
+      // int startmem = sym->getMemory("Global");
+      //inst_buff->buff.front()->mem = startmem;
+      //inst_buff->buff.front()->is_initialized = true;
 
 
       //patch up uninitialized statements
-      for(std::unique_ptr<Stmt> i : inst_buff->buff){
-        if (!i->is_initialized){
-          i->initialize(sym);
-        }
-      }
-      inst_buff->buff.push_back(std::make_unique<Stmt>(24, true, -1, "none", "none", -1, "none"));
+      // for(std::unique_ptr<Stmt> i : inst_buff->buff){
+      //   if (!i->is_initialized){
+      //     i->initialize(sym);
+      //   }
+      // }
+      Stmt * exit = new Exit();
       
     } 
     
     else if (line.compare("return") == 0) {
-      // update the mem for sub_routine in the inst_buff and put return into
-      inst_buff->buff.push_back(std::make_unique<Stmt>(20, true, -1, "none", "none", -1, "none"));
+
+      Stmt * ret = new Ret();
       
-      for (std::vector<std::unique_ptr<Stmt>>::reverse_iterator i = inst_buff->buff.rbegin(); i != inst_buff->buff.rend(); i++){
-        if (i->op_add == 19){
-          i->is_initialized = true;
-          i->mem = sym->getMemory(scope.front());
-          break;
-        }
-      }
+      // update the mem for sub_routine in the inst_buff and put return into
+      //inst_buff->buff.push_back(ret);
+      
+      // for (std::vector<std::unique_ptr<Stmt>>::reverse_iterator i = inst_buff->buff.rbegin(); i != inst_buff->buff.rend(); i++){
+      //   if (i->op_add == 19){
+      //     i->is_initialized = true;
+      //     i->mem = sym->getMemory(scope.front());
+      //     break;
+      //   }
+      // }
       
       //pop all the variables in the sub scope
-      std::map<std::string, Data *>::iterator it;
+      // std::map<std::string, Data *>::iterator it;
     
-      for (it = table.begin(); it != table.end(); it++) {
-        if ((it->second)->scope == scope.front())
-          table.erase(it);
-      }
+      // for (it = table.begin(); it != table.end(); it++) {
+      //   if ((it->second)->scope == scope.front())
+      //     table.erase(it);
+      // }
       
-      //pop scope
-      scope.pop_front();
+      // //pop scope
+      // scope.pop_front();
     } 
       
     
     else if (line.compare("pop") == 0) {
-      stmt * pop = new Pop(var)
-
-      inst_buff->buff.push_back(pop));
+      Stmt * pop = new Pop();
+      //inst_buff->buff.push_back(pop));
 
     } 
     
     else if (line.compare("dup") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(64,true, -1, "none", "none", -1, "none" ));
+      Stmt * dup = new Dup();
+      //inst_buff->buff.push_back(dup);
 
     } 
     
     else if (line.compare("swap") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(65, true, -1, "none", "none", -1, "none"));
+      Stmt * swap = new Swap();
+      //inst_buff->buff.push_back(swap);
 
     } 
     
     else if (line.compare("add") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(80,true, -1, "none", "none", -1, "none"));
-      // inst_buff->buff.push_back(add);
+      Stmt * add = new Add();
+      //inst_buff->buff.push_back(add);
+      // //inst_buff->buff.push_back(add);
     } 
     
     else if (line.compare("negate") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(81,true, -1, "none", "none", -1, "none"));
-      // inst_buff->buff.push_back(neg);
+      
+      Stmt * neg = new Negate();
+      //inst_buff->buff.push_back(neg);
+      // //inst_buff->buff.push_back(neg);
     } 
     
     else if (line.compare("mul") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(82,true, -1, "none", "none", -1, "none"));
-      // inst_buff->buff.push_back(mul);
+      Stmt * mul = new Mul();
+      //inst_buff->buff.push_back(mul);
+      // //inst_buff->buff.push_back(mul);
     } 
     
     else if (line.compare("div") == 0) {
-      inst_buff->buff.push_back(std::make_unique<Stmt>(83, true, -1, "none", "none", -1, "none"));
-      // inst_buff->buff.push_back(div);
+      Stmt * div = new Div();
+      
+      //inst_buff->buff.push_back(div);
+      // //inst_buff->buff.push_back(div);
     } 
     
     else if (line.compare("printtos") == 0) {
-
-      inst_buff->buff.push_back(std::make_unique<Stmt>(97, true, -1, "none", "none", -1, "none"));
-      // inst_buff->buff.push_back(pts);
+      Stmt * printtos = new Printtos();
+      //inst_buff->buff.push_back(printtos);
+      // //inst_buff->buff.push_back(pts);
     } // from here on are the regex needed for matching
     
-    else if(regex.match(line,prints)){
-        string printer = line.substr(6,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(96,true, -1, "none", printer, -1, "none"));
+    else if (regex_match(line,prints)){
+      
+      string printval = line.substr(6,line.length());
+      Stmt * print = new Prints(printval);
+      //inst_buff->buff.push_back(print);
         
     }
     
     else if (regex_match(line, scl)) {
-      std::cout<<"\nDeslscal";
-      Data *data = new Data(sym->table.size(), 1, false, scope.front());
+      //DECLSCAL
+      // Save variable into Data with the current scope and is_label false
+      cout<<"HERE";
+      
       //data->print();
 
-      string lab = line.substr(7, line.length());
-      sym->putEntry(lab, data);
-      // Save variable into Data with the current scope and is_label false
+      string var = line.substr(7, line.length());
+      sym->putEntry(var, new Data(-1, 1, false, scope.front()));
+      
 
     } 
     
-    else if (regex_match(line, arr)) {
-      //need to modify this function 
-      Data *arr;
-      // need to filter regex to get just length
+    // Need to figure out how to do this!!!!!
+    else if (regex_match(line, arr)) {  
+      // string name = line.substr(7, 8);
+      // int size = stoi(line.substr(8, line.length()));
       
-      string name = line.substr(7, 8);
-      int size = stoi(line.substr(8, line.length()));
-      
-      Data *data = new Data(sym->table.size(), size, false, scope.front());
-      sym->putEntry(name, data);
+      // Data *data = new Data(-1, size, false, scope.front());
+      // sym->putEntry(name, data);
     } 
-    
+      
     else if (regex_match(line, lbl)) {
       //whenever we save label to the table the position in the
       //statement buffer is saved as opposed to memory
-      string lab = line.substr(5, line.length());
-      Data *data = new Data(sym->table.size(), 0, true, scope.front());
-      data->print();
-      sym->putEntry(lab, data);
+      // string lbl = line.substr(5, line.length());
+      // Data *data = new Data(getStatementLine, 0, true, scope.front());
+      // data->print();
+      // sym->putEntry(lbl, data);
 
-      std::cout << "\nTEST. PRINTING TABLE:";
-      sym->printTable();
+      // std::cout << "\nTEST. PRINTING TABLE:";
+      // sym->printTable();
 
     } 
-    
     else if (regex_match(line, gsl)) {
-      string gosub = line.substr(10, line.length());
-      Data * data = new Data(sym->table.size(),0,true,scope.front());
-      data->print();
-      sym->putEntry(gosub, data);
+      // string gosub = line.substr(10, line.length());
+      // Data * data = new Data(getStatementLine, 0, true, scope.front());
+      // data->print();
+      // sym->putEntry(gosub, data);
       
     } 
     
     else if (regex_match(line, jmp)) {
       string jm = line.substr(4,line.length());
-
-      inst_buff->buff.push_back(std::make_unique<Stmt>(16, false, -1, jm, "none", -1, "none" ));
+      Stmt * jump = new Jump(jm);
+      //inst_buff->buff.push_back(jump);
       
     } 
     
     else if (regex_match(line, jmp_z)) {
       string jmpz = line.substr(8,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(17, false, -1, jmpz, "none", -1, "none"));
-      // inst_buff->buff.push_back(jmpz);
+      Stmt * jump_z = new Jumpzero(jmpz);
+      //inst_buff->buff.push_back(jump_z);
+      // //inst_buff->buff.push_back(jmpz);
 
     } 
     
     else if (regex_match(line, jmp_n)) {
       string jmpn = line.substr(9,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(18, false, -1, jmpz, "none", -1, "none"));
-      // inst_buff->buff.push_back(jmpn);
+      Stmt * jmp = new Jump_n(jmpn); 
+      //inst_buff->buff.push_back(jmp);
+      
+      // //inst_buff->buff.push_back(jmpn);
 
     } 
     
     else if (regex_match(line, gs)) {
-      // encountered Gosub. Change scope
+      // encountered Gosub. CHANGE SCOPE.
       std::string label = line.substr(10, line.length());
-      scope.push_front(label);
-
-      inst_buff->buff.push_back(std::make_unique<Stmt>(19, false, -1, label, "none", -1, "none"));
+      Stmt * go = new Ent_sub(label);
+      
+      
+      //inst_buff->buff.push_back(go);
 
     } 
     
     else if (regex_match(line, psh_scl)) {
       string scl = line.substr(8,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(32, true, sym->table.size(), "none","none", -1, "none"));
+      Stmt * psh_sl = new Push_scl(scl); 
+      //inst_buff->buff.push_back(psh_sl);
     
 
     } 
     
     else if (regex_match(line, psh_arr)) {
+      // need to also get the mem amount 
       string arr = line.substr(7,line.length());
+      Stmt * psh_a = new Push_arr(arr);
+      
       // need to do regex to find size 
-      inst_buff->buff.push_back(std::make_unique<Stmt>(33, true, sym->table.size(), "none","none", -1, "none"));
-    } 
+      
+      //inst_buff->buff.push_back(psh_a);
+      
+      } 
     
     else if (regex_match(line, psh_i)) {
-      printf("pushi\n");
-      string psh_i = line.substr(5,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(34, true, -1, "none","none", -1, psh_i));
+      //printf("pushi\n");
+      string i = line.substr(5,line.length());
+      Stmt * push_i = new Push_i(i);
+      //inst_buff->buff.push_back(push_i);
 
     } 
     
     else if (regex_match(line, pop_scl)) {
       printf("pop_scl\n");
-      string pop_scl = line.substr(8,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(48, true, sym->table.size(), pop_scl,"none," -1, "none"));
-      // inst_buff->buff.push_back(pop_scl);
+      string var = line.substr(8,line.length());
+      Stmt * pop_scal = new Pop_scl(var);
+      //inst_buff->buff.push_back(pop_scal);
+      // //inst_buff->buff.push_back(pop_scl);
     } 
     
     else if (regex_match(line, pop_arr)) {
-      string pop_arr = line.substr(7,line.length());
-      inst_buff->buff.push_back(std::make_unique<Stmt>(49, true, -1, pop_arr, "none", -1, "none"));
-      // inst_buff->buff.push_back(pop_arr);
+      
+      string var = line.substr(7,line.length());
+      Stmt * pop_arr = new Pop_arr(var);
+      //inst_buff->buff.push_back(pop_arr);
+
     }
 
     // did not match a command return an error command

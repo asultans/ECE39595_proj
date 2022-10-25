@@ -1,3 +1,6 @@
+#ifndef OPS_H
+#define OPS_H
+
 #include "buffers.h"
 #include <iostream>
 
@@ -12,7 +15,8 @@
 class Jump : public Stmt {
 private:
 public:
-  Jump();
+  Jump(std::string jm);
+  std::string jm;
   int op_add = 16;
 };
 
@@ -20,7 +24,8 @@ public:
 class Jumpzero : public Stmt {
 private:
 public:
-Jumpzero();
+std::string jmp_z;
+Jumpzero(std::string jmp_z);
   int op_add = 17;
 };
 
@@ -28,28 +33,27 @@ Jumpzero();
 class Jump_n : public Stmt {
 private:
 public:
-  Jump_n();
+  std::string jmp_n;
+  Jump_n(std::string jmp_n);
   int op_add = 18;
 };
 
 // gosub label
 class gslabel : public Stmt {
 private:
-  std::string label;
-  double loc;
-
 public:
-  gslabel();
+  std::string name;
+  gslabel(std::string name);
   int op_add = 19;
   // virtual TYPE sym_add(std::string label, double loc);
   // virtual TYPE instr_add();
 };
 
 //  return
-class Return : public Stmt {
+class Ret : public Stmt {
 private:
 public:
-  Return();
+  Ret();
   int op_add = 20;
 };
 
@@ -57,7 +61,8 @@ public:
 class Ent_sub : public Stmt {
 private:
 public:
-  Ent_sub();
+  Ent_sub(std::string label);
+  std::string label;
   int op_add = 21;
 };
 
@@ -74,6 +79,7 @@ class Start : public Stmt {
 private:
   // in theory this is the op_start address converted to int for now
 public:
+  int mem = 0;
   Start();
   int op_add = 23;
 };
@@ -90,7 +96,8 @@ public:
 class Push_scl : public Stmt {
 private:
 public:
-  Push_scl();
+  std::string name;
+  Push_scl(std::string name);
   int op_add = 32;
 };
 
@@ -98,7 +105,8 @@ public:
 class Push_arr : public Stmt {
 private:
 public:
-  Push_arr();
+  Push_arr(std::string name);
+  std::string name;
   int op_add = 33;
 };
 
@@ -106,7 +114,9 @@ public:
 class Push_i : public Stmt {
 private:
 public:
-Push_i();
+  // maybe change to digit? current serialize works with string so maybe dont change
+  std::string i;
+  Push_i(std::string i);
   int op_add = 34;
 };
 
@@ -114,7 +124,8 @@ Push_i();
 class Pop_scl : public Stmt {
 private:
 public:
-  Pop_scl();
+  std::string name;
+  Pop_scl(std::string name);
   int op_add = 48;
 };
 
@@ -122,7 +133,8 @@ public:
 class Pop_arr : public Stmt {
 private:
 public:
-  Pop_arr();
+  std::string name;
+  Pop_arr(std::string name);
   int op_add = 49;
 };
 
@@ -186,7 +198,8 @@ public:
 class Prints : public Stmt {
 private:
 public:
-  Prints();
+  std::string printed;
+  Prints(std::string printed);
   int op_add = 96;
 };
 
@@ -197,3 +210,5 @@ public:
   Printtos();
   int op_add = 97;
 };
+
+#endif

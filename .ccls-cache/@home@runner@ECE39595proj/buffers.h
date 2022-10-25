@@ -1,3 +1,5 @@
+#ifndef BUFF_h
+#define BUFF_h
 
 #include "Data.h"
 #include "Stmt.h"
@@ -5,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Inst_buff {
 public:
@@ -30,3 +33,5 @@ private:
   static Str_buff *uniqueBuff;
   // Str_buff();
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef DATA_H
+#define DATA_H
+
 #include <forward_list>
 #include <string>
 
@@ -13,3 +16,4 @@ public:
   ~Data();
   void print();
 };
+#endif

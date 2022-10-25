@@ -1,3 +1,6 @@
+#ifndef SYMTBL_h
+#define SYMTBL_h
+
 #include "Data.h"
 #include <map>
 #include <memory>
@@ -13,7 +16,11 @@ public:
   ~Symtbl();
   Symtbl();
   void printTable();
+  int getNextLoc();
+  void popScope(std::string scope);
 
 private:
   static Symtbl *uniqueTable;
 };
+
+#endif

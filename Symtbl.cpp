@@ -35,8 +35,16 @@ Data *Symtbl::getData(std::string key) {
 }
 
 bool Symtbl::putEntry(std::string key, Data *data) {
-  std::pair<std::map<std::string, Data *>::iterator, bool> ret;
+  //if it's a variable then get next location
+  if (!data->is_label){
+    data->location = getNextLoc();
+  }
 
+  if(!data->is_label && data->location != -1){
+    std::cout << "is_label: " << data->is_label <<" | loc:" << data->location;
+    std::cout << "\nERROR variable location is improperly initialized. Main->Symtbl::putEntry";
+  }
+  std::pair<std::map<std::string, Data *>::iterator, bool> ret;
   ret = table.insert({key, data});
   if (ret.second == false) {
     std::cout << "element " << key << " already existed";
@@ -68,3 +76,28 @@ void Symtbl::printTable(){
     it->second->print();
   }
 }
+
+int Symtbl::getNextLoc(){
+  int loc = 0;
+  for(std::map<std::string, Data*>::const_iterator it = table.begin();
+  it != table.end(); ++it)
+  {  
+    //add len of all variables
+    if (!it->second->is_label){ 
+      loc += it->second->length;
+    }
+  }
+  return loc;
+}
+
+void Symtbl::popScope(std::string scope){
+  std::map<std::string, Data *>::iterator it;
+
+  for (it = table.begin(); it != table.end(); it++) {
+    if ((it->second)->scope == scope)
+      table.erase(it);
+  }
+  return;
+}
+
+
