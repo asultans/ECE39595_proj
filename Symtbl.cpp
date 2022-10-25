@@ -35,15 +35,17 @@ Data *Symtbl::getData(std::string key) {
 }
 
 bool Symtbl::putEntry(std::string key, Data *data) {
+
   if(!data->is_label && data->location != -1){
     std::cout << "is_label: " << data->is_label <<" | loc:" << data->location;
     std::cout << "\nERROR variable location is improperly initialized. Main->Symtbl::putEntry";
   }
+  
   //if it's a variable then get next location
   if (!data->is_label){
     data->location = getNextLoc();
   }
-  
+
   std::pair<std::map<std::string, Data *>::iterator, bool> ret;
   ret = table.insert({key, data});
   if (ret.second == false) {

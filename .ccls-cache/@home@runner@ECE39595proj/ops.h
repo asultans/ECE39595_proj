@@ -81,7 +81,6 @@ private:
 public:
   int mem = 0;
   Start();
-  virtual ~Start();
   int op_add = 23;
 };
 

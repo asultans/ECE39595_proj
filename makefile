@@ -1,7 +1,7 @@
 # suffix rules don't allow pre-requisites to be used and are deprecated for
 # this reason.  The right way to do this is to use patterns.  The "%" pattern
 # allows any file to be matched.
-OBJS = main.o Symtbl.o buffers.o ops.o Data.o
+OBJS = main.o Symtbl.o buffers.o Stmt.o ops.o Data.o
 CC = g++ -std=c++11
 INCLUDE = 
 LIBS = 

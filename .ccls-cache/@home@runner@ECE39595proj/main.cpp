@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   string line;
   fstream fl;
   Symtbl *sym = Symtbl::getSymbolTable();
-  Inst_buff *inst_buff = Inst_buff::getInst_buff();
+  //Inst_buff *inst_buff = Inst_buff::getInst_buff();
   Str_buff *str_buff = Str_buff::getStr_buff();
   
   // Instantiate Scope
@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
 
     //START OPS.H ADDED
     if (line.compare("start") == 0) {
-      Stmt * start = new Start();
-      inst_buff->buff.push_back(start);
+      Stmt * st = new Start();
+      
 
     } 
     //END OPS.H ADDED
@@ -198,13 +198,14 @@ int main(int argc, char *argv[]) {
     else if (regex_match(line, lbl)) {
       //whenever we save label to the table the position in the
       //statement buffer is saved as opposed to memory
-      string lbl = line.substr(5, line.length());
-      Data *data = new Data(str_buff->buff.size(), 0, true, scope.front());
-      data->print();
-      sym->putEntry(lbl, data);
+      
+      // string lbl = line.substr(5, line.length());
+      // Data *data = new Data(inst_buff->buff.size(), 0, true, scope.front());
+      // data->print();
+      // sym->putEntry(lbl, data);
 
-      std::cout << "\nTEST. PRINTING TABLE:";
-      sym->printTable();
+      // std::cout << "\nTEST. PRINTING TABLE:";
+      // sym->printTable();
 
     } 
     else if (regex_match(line, gsl)) {
