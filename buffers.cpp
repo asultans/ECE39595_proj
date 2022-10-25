@@ -3,7 +3,7 @@
 Inst_buff *Inst_buff::uniqueBuff = nullptr;
 
 // PRIVATE constructor:
-Inst_buff::Inst_buff() { buff = std::vector<std::unique_ptr<Stmt>>(); }
+Inst_buff::Inst_buff() { buff = std::vector<Stmt *>(); }
 
 // get unique instance of the singleton
 Inst_buff *Inst_buff::getInst_buff() {

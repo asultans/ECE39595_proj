@@ -12,8 +12,8 @@
 class Inst_buff {
 public:
   static Inst_buff *getInst_buff();
-  std::vector<std::unique_ptr<Stmt>> buff;
-  ~Inst_buff();
+  std::vector<Stmt *> buff;
+  virtual ~Inst_buff();
 
   Inst_buff();
 
@@ -26,7 +26,7 @@ class Str_buff {
 public:
   static Str_buff *getStr_buff();
   std::vector<std::string> buff;
-  ~Str_buff();
+  virtual ~Str_buff();
   Str_buff();
 
 private:

@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   string line;
   fstream fl;
   Symtbl *sym = Symtbl::getSymbolTable();
-  //Inst_buff *inst_buff = Inst_buff::getInst_buff();
+  Inst_buff *inst_buff = Inst_buff::getInst_buff();
   Str_buff *str_buff = Str_buff::getStr_buff();
   
   // Instantiate Scope
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     //START OPS.H ADDED
     if (line.compare("start") == 0) {
       Stmt * st = new Start();
-      
+      inst_buff->buff.push_back(st);
 
     } 
     //END OPS.H ADDED
