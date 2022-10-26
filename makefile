@@ -1,7 +1,7 @@
 # suffix rules don't allow pre-requisites to be used and are deprecated for
 # this reason.  The right way to do this is to use patterns.  The "%" pattern
 # allows any file to be matched.
-OBJS = main.o Symtbl.o buffers.o Stmt.o ops.o Data.o
+OBJS = main.o Symtbl.o buffers.o ops.o Data.o Stmt.o
 CC = g++ -std=c++11
 INCLUDE = 
 LIBS = 
@@ -48,10 +48,13 @@ testJump: Proj_stp1
 testGoSub: Proj_stp1
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/13SimpleGoSub_GoSubLabel_Return 13SimpleGoSub_GoSubLabel_Return_output
 
-testScalar: Proj_stp1
+testScalarEasy: Proj_stp1
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/14ScalarEasy 14ScalarEasy_output
-	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/15ScalarHard 15ScalarHard_output
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/16ScalarEasy 16ScalarEasy_output
+
+
+testScalerHard: Proj_stp1
+	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/15ScalarHard 15ScalarHard_output
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/17ScalarHard 17ScalarHard_output
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/18ScalarHardest 18ScalarHardest_output
 

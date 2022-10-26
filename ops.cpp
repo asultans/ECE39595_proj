@@ -4,7 +4,11 @@ Jump::Jump(std::string jm_): jm(jm_){};
 void Jump::printData(){
   std::cout << "Jump " << jm << "\n";
 };
+
 Mul::Mul(){};
+void Mul::printData(){
+  std::cout << "Mul ";
+};
 
 Jumpzero::Jumpzero(std::string jmp_z_): jmp_z(jmp_z_){};
 void Jumpzero::printData(){
@@ -40,7 +44,7 @@ void Start::printData(){
 //check if this is pushed to inst_buff
 Exit::Exit(){};
 void Exit::printData(){
-  std::cout << "Exit" ;
+  std::cout << "Exit\n" ;
 };
 Push_scl::Push_scl(std::string name_) : name(name_){};
 void Push_scl::printData(){
@@ -48,9 +52,9 @@ void Push_scl::printData(){
 };
 
 
-Push_arr::Push_arr(std::string name_, int loc_) : name(name_), loc(loc_){};
+Push_arr::Push_arr(std::string name_, int mem_) : name(name_), mem(mem_){};
 void Push_arr::printData(){
-  std::cout << "PushArray " << name << ", (" << loc <<")\n";
+  std::cout << "PushArray " << name << ", (" << mem <<")\n";
 };
 
 Push_i::Push_i(std::string i_) : i(i_){};

@@ -13,11 +13,10 @@ Inst_buff *Inst_buff::getInst_buff() {
   return uniqueBuff;
 }
 
-void Inst_buff::PrintBuff(){
-  for(Stmt * i : inst_buff->buff){
-        std::cout << i->
-
-          }    
+void Inst_buff::printBuff(){
+  for(Stmt * i : buff){
+    i->printData();
+  }
 };
 
 

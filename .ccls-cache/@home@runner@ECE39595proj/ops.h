@@ -1,7 +1,6 @@
 #ifndef OPS_H
 #define OPS_H
 
-#include "buffers.h"
 #include "Stmt.h"
 #include <iostream>
 
@@ -20,9 +19,6 @@ public:
   std::string jm;
   int op_add = 16;
   virtual void printData();
-  virtual void serialize(std::ofstream aout_file) {
-    
-  };
 };
 
 // jmpzero
@@ -92,7 +88,7 @@ class Exit : public Stmt {
 private:
 public:
   Exit();
-  void printData();
+  virtual void printData();
   int op_add = 22;
 };
 
@@ -102,7 +98,7 @@ private:
 public:
   std::string name;
   Push_scl(std::string name);
-  void printData();
+  virtual void printData();
   int op_add = 32;
 };
 
@@ -110,11 +106,11 @@ public:
 class Push_arr : public Stmt {
 private:
 public:
-  Push_arr(std::string name_, int loc_);
-  void printData();
+  Push_arr(std::string name_, int mem);
+  virtual void printData();
   std::string name;
   int op_add = 33;
-  int loc;
+  int mem;
 };
 
 //  push_i
@@ -123,7 +119,7 @@ private:
 public:
   // maybe change to digit? current serialize works with string so maybe dont change
   std::string i;
-  void printData();
+  virtual void printData();
   Push_i(std::string i);
   int op_add = 34;
 };
@@ -133,7 +129,7 @@ class Pop_scl : public Stmt {
 private:
 public:
   std::string name;
-  void printData();
+  virtual void printData();
   Pop_scl(std::string name);
   int op_add = 48;
 };
@@ -143,7 +139,7 @@ class Pop_arr : public Stmt {
 private:
 public:
   std::string name;
-  void printData();
+  virtual void printData();
   Pop_arr(std::string name);
   int op_add = 49;
 };
@@ -152,7 +148,7 @@ public:
 class Pop : public Stmt {
 private:
 public:
-  void printData();
+  virtual void printData();
   Pop();
   int op_add = 50;
 };
@@ -162,7 +158,7 @@ class Dup : public Stmt {
 private:
 public:
   Dup();
-  void printData();
+  virtual void printData();
   int op_add = 64;
 };
 
@@ -171,7 +167,7 @@ class Swap : public Stmt {
 private:
 public:
   Swap();
-  void printData();
+  virtual void printData();
   int op_add = 65;
 };
 
@@ -180,7 +176,7 @@ class Add : public Stmt {
 private:
 public:
   Add();
-  void printData();
+  virtual void printData();
   int op_add = 80;
 };
 
@@ -189,7 +185,7 @@ class Negate : public Stmt {
 private:
 public:
   Negate();
-  void printData();
+  virtual void printData();
   int op_add = 81;
 };
 
@@ -198,7 +194,7 @@ class Mul : public Stmt {
 private:
 public:
   Mul();
-  void printData();
+  virtual void printData();
   int op_add = 82;
 };
 
@@ -207,7 +203,7 @@ class Div : public Stmt {
 private:
 public:
   Div();
-  void printData();
+  virtual void printData();
   int op_add = 83;
 };
 
@@ -217,7 +213,7 @@ private:
 public:
   std::string printed;
   Prints(std::string printed);
-  void printData();
+  virtual void printData();
   int op_add = 96;
 };
 
@@ -227,7 +223,7 @@ private:
 public:
   Printtos();
   int op_add = 97;
-  void printData();
+  virtual void printData();
 };
 
 #endif

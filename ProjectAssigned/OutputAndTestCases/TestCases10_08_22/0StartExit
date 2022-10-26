@@ -1,4 +1,9 @@
 start
 declscal A
+swap
+pop
+add
+label D
+declarr X 3
 exit
 end

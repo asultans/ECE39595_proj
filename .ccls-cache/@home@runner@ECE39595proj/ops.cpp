@@ -4,7 +4,11 @@ Jump::Jump(std::string jm_): jm(jm_){};
 void Jump::printData(){
   std::cout << "Jump " << jm << "\n";
 };
+
 Mul::Mul(){};
+void Mul::printData(){
+  std::cout << "Mul ";
+};
 
 Jumpzero::Jumpzero(std::string jmp_z_): jmp_z(jmp_z_){};
 void Jumpzero::printData(){
@@ -33,12 +37,6 @@ void Ent_sub::printData(){
   std::cout << "Enter Go Sub " << label << "\n";
 };
 
-//idk what to do here
-Exit_sub::Exit_sub(){};
-void Exit_sub::printData(){
-  std::cout << "EXIT SUB????\n";
-};
-
 Start::Start(){};
 void Start::printData(){
   std::cout << "Start " << mem << "\n";
@@ -54,9 +52,9 @@ void Push_scl::printData(){
 };
 
 
-Push_arr::Push_arr(std::string name_, int loc_) : name(name_), loc(loc_){};
+Push_arr::Push_arr(std::string name_, int mem_) : name(name_), mem(mem_){};
 void Push_arr::printData(){
-  std::cout << "PushArray " << name << ", (" << loc <<")\n";
+  std::cout << "PushArray " << name << ", (" << mem <<")\n";
 };
 
 Push_i::Push_i(std::string i_) : i(i_){};

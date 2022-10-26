@@ -1,4 +1,5 @@
 #include "Symtbl.h"
+#include "buffers.h"
 #include "ops.h"
 #include <algorithm>
 #include <fstream>
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
 
   // test if regex can handle edge cases
   regex scl("(declscal )(.*)+");
-  regex arr("(declarr )(.*)+'\t'(.*)"); // check the \t for whitespace
+  regex arr("(declarr )(.*)+"); 
   regex lbl("(label )(.*)+");
   regex gsl("(gosublabel )(.*)+");
   regex jmp("(jump )(.*)+");
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
   
   // read line by line
   while (getline(fl, line)) {
-    printf("in loop\n");
+    //printf("in loop\n");
 
     //START OPS.H ADDED
     if (line.compare("start") == 0) {
@@ -59,21 +60,29 @@ int main(int argc, char *argv[]) {
     } 
     //END OPS.H ADDED
     else if (line.compare("end") == 0) {
-      Stmt * end = new End();
-      inst_buff->buff.push_back(end);
+
+      // returns length of vector as unsigned int
+      unsigned int buffSize = inst_buff->buff.size();
+      for(unsigned int i = 0; i < buffSize; i++)
+      {
+        inst_buff->buff[i]->printData();
+      }
+      cout << endl;
       
+      //DONT CREATE STMT
       //Reached END. PRINT SERIALIZE
       
-      for(Stmt * i : inst_buff->buff){
-        if (!i->is_initialized){
-          i->serialize(argv[2]);
-        }
-      }
+      // for(Stmt * i : inst_buff->buff){
+      //   if (!i->is_initialized){
+      //     i->serialize(argv[2]);
+      //   }
+      // }
     } 
 
     else if (line.compare("exit") == 0) {
       Stmt * exit = new Exit();
-      inst_buff->push_back(exit);
+      inst_buff->buff.push_back(exit);
+      cout << inst_buff->buff.size();
       //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
       //Also fill in all jumps and gosubs
       // int startmem = sym->getMemory("Global");
@@ -87,16 +96,14 @@ int main(int argc, char *argv[]) {
       //     i->initialize(sym);
       //   }
       // }
-      Stmt * exit = new Exit();
-      
     } 
     
     else if (line.compare("return") == 0) {
 
       Stmt * ret = new Ret();
-      
+      inst_buff->buff.push_back(ret);
       // update the mem for sub_routine in the inst_buff and put return into
-      //inst_buff->buff.push_back(ret);
+      inst_buff->buff.push_back(ret);
       
       // for (std::vector<std::unique_ptr<Stmt>>::reverse_iterator i = inst_buff->buff.rbegin(); i != inst_buff->buff.rend(); i++){
       //   if (i->op_add == 19){
@@ -121,59 +128,56 @@ int main(int argc, char *argv[]) {
     
     else if (line.compare("pop") == 0) {
       Stmt * pop = new Pop();
-      //inst_buff->buff.push_back(pop));
+      inst_buff->buff.push_back(pop);
 
     } 
     
     else if (line.compare("dup") == 0) {
       Stmt * dup = new Dup();
-      //inst_buff->buff.push_back(dup);
+      inst_buff->buff.push_back(dup);
 
     } 
     
     else if (line.compare("swap") == 0) {
       Stmt * swap = new Swap();
-      //inst_buff->buff.push_back(swap);
+      inst_buff->buff.push_back(swap);
 
     } 
     
     else if (line.compare("add") == 0) {
       Stmt * add = new Add();
-      //inst_buff->buff.push_back(add);
-      // //inst_buff->buff.push_back(add);
+      inst_buff->buff.push_back(add);
+
     } 
     
     else if (line.compare("negate") == 0) {
       
       Stmt * neg = new Negate();
-      //inst_buff->buff.push_back(neg);
-      // //inst_buff->buff.push_back(neg);
+      inst_buff->buff.push_back(neg);
     } 
     
     else if (line.compare("mul") == 0) {
       Stmt * mul = new Mul();
-      //inst_buff->buff.push_back(mul);
-      // //inst_buff->buff.push_back(mul);
+      inst_buff->buff.push_back(mul);
     } 
     
     else if (line.compare("div") == 0) {
       Stmt * div = new Div();
+      inst_buff->buff.push_back(div);
       
-      //inst_buff->buff.push_back(div);
-      // //inst_buff->buff.push_back(div);
     } 
     
     else if (line.compare("printtos") == 0) {
       Stmt * printtos = new Printtos();
-      //inst_buff->buff.push_back(printtos);
-      // //inst_buff->buff.push_back(pts);
+      inst_buff->buff.push_back(printtos);
+      
     } // from here on are the regex needed for matching
     
     else if (regex_match(line,prints)){
       
       string printval = line.substr(6,line.length());
       Stmt * print = new Prints(printval);
-      //inst_buff->buff.push_back(print);
+      inst_buff->buff.push_back(print);
         
     }
     
@@ -202,13 +206,13 @@ int main(int argc, char *argv[]) {
       //whenever we save label to the table the position in the
       //statement buffer is saved as opposed to memory
       
-      // string lbl = line.substr(5, line.length());
-      // Data *data = new Data(inst_buff->buff.size(), 0, true, scope.front());
-      // data->print();
-      // sym->putEntry(lbl, data);
+      string lbl = line.substr(5, line.length());
+      Data *data = new Data(inst_buff->buff.size() + 1, 0, true, scope.front());
+      sym->putEntry(lbl, data);
 
-      // std::cout << "\nTEST. PRINTING TABLE:";
-      // sym->printTable();
+      std::cout << "\nTEST. PRINTING TABLE:______";
+      sym->printTable();
+      std::cout << "END TEST. PRINT TABLE\n\n";
 
     } 
     else if (regex_match(line, gsl)) {
@@ -222,24 +226,24 @@ int main(int argc, char *argv[]) {
     else if (regex_match(line, jmp)) {
       string jm = line.substr(4,line.length());
       Stmt * jump = new Jump(jm);
-      //inst_buff->buff.push_back(jump);
+      inst_buff->buff.push_back(jump);
       
     } 
     
     else if (regex_match(line, jmp_z)) {
       string jmpz = line.substr(8,line.length());
       Stmt * jump_z = new Jumpzero(jmpz);
-      //inst_buff->buff.push_back(jump_z);
-      // //inst_buff->buff.push_back(jmpz);
+      inst_buff->buff.push_back(jump_z);
+      
 
     } 
     
     else if (regex_match(line, jmp_n)) {
       string jmpn = line.substr(9,line.length());
       Stmt * jmp = new Jump_n(jmpn); 
-      //inst_buff->buff.push_back(jmp);
+      inst_buff->buff.push_back(jmp);
       
-      // //inst_buff->buff.push_back(jmpn);
+      
 
     } 
     
@@ -247,28 +251,27 @@ int main(int argc, char *argv[]) {
       // encountered Gosub. CHANGE SCOPE.
       std::string label = line.substr(10, line.length());
       Stmt * go = new Ent_sub(label);
-      
-      
-      //inst_buff->buff.push_back(go);
+      inst_buff->buff.push_back(go);
 
     } 
     
     else if (regex_match(line, psh_scl)) {
       string scl = line.substr(8,line.length());
       Stmt * psh_sl = new Push_scl(scl); 
-      //inst_buff->buff.push_back(psh_sl);
+      inst_buff->buff.push_back(psh_sl);
     
 
     } 
     
     else if (regex_match(line, psh_arr)) {
       // need to also get the mem amount 
-      string arr = line.substr(7,line.length());
-      Stmt * psh_a = new Push_arr(arr);
+      string name = line.substr(8,9);
+      int mem = stoi(line.substr(9,line.length()));
+      Stmt * psh_a = new Push_arr(name, mem);
       
       // need to do regex to find size 
       
-      //inst_buff->buff.push_back(psh_a);
+      inst_buff->buff.push_back(psh_a);
       
       } 
     
@@ -276,7 +279,7 @@ int main(int argc, char *argv[]) {
       //printf("pushi\n");
       string i = line.substr(5,line.length());
       Stmt * push_i = new Push_i(i);
-      //inst_buff->buff.push_back(push_i);
+      inst_buff->buff.push_back(push_i);
 
     } 
     
@@ -284,21 +287,22 @@ int main(int argc, char *argv[]) {
       printf("pop_scl\n");
       string var = line.substr(8,line.length());
       Stmt * pop_scal = new Pop_scl(var);
-      //inst_buff->buff.push_back(pop_scal);
-      // //inst_buff->buff.push_back(pop_scl);
+      inst_buff->buff.push_back(pop_scal);
+      // inst_buff->buff.push_back(pop_scl);
     } 
     
     else if (regex_match(line, pop_arr)) {
       
       string var = line.substr(7,line.length());
       Stmt * pop_arr = new Pop_arr(var);
-      //inst_buff->buff.push_back(pop_arr);
+      inst_buff->buff.push_back(pop_arr);
 
     }
 
     // did not match a command return an error command
     else {
       printf("line does not match any commands\n");
+      printf("")
     }
   }
   // end of while

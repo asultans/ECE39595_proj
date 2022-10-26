@@ -8,6 +8,6 @@ Data::Data(int location_, int length_, bool is_label_, std::string scope_)
 Data::~Data(){}
 
 void Data::print(){
-  std::string printres = "<" + std::to_string(location) + ", " + std::to_string(length) + ">\nIs it label? " + std::to_string(is_label) + "\nScope:" + (scope) + "\n";
+  std::string printres = "\n<" + std::to_string(location) + ", " + std::to_string(length) + ">\nIs it label? " + std::to_string(is_label) + "\nScope: " + (scope) + "\n";
   std::cout << printres;
 }
