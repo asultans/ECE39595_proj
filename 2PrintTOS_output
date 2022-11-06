@@ -1,0 +1,9 @@
+
+Start 0
+PushI  (2)
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:___________END TEST. PRINT TABLE______
+

@@ -1,0 +1,25 @@
+
+Start 0
+GoSub L1(4)
+Prints this_should_print
+Jump, 7
+GoSubLabel L1
+Prints print_in_subroutine_should_pri
+Return
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: L1
+Data: 
+<4, 0>
+Is it label? 1
+Scope: L1
+
+Key: endlabel
+Data: 
+<7, 0>
+Is it label? 1
+Scope: L1
+_____END TEST. PRINT TABLE______
+

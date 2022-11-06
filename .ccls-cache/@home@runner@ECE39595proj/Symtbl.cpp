@@ -29,8 +29,10 @@ Data *Symtbl::getData(std::string key) {
         return e.second; // found key return value pair
       }
     }
-    throw std::invalid_argument(
-        "getData::error key wasn't found"); // key wasn't found
+    std::cout << "\nThe following key not found " << key << std::endl;
+    // throw std::invalid_argument(
+    //     "getData::error key wasn't found"); // key wasn't found
+    return nullptr;
   }
 }
 
@@ -39,6 +41,7 @@ bool Symtbl::putEntry(std::string key, Data *data) {
   if(!data->is_label && data->location != -1){
     std::cout << "is_label: " << data->is_label <<" | loc:" << data->location;
     std::cout << "\nERROR variable location is improperly initialized. Main->Symtbl::putEntry";
+    return false;
   }
   
   //if it's a variable then get next location
@@ -74,7 +77,7 @@ void Symtbl::printTable(){
   for(std::map<std::string, Data*>::const_iterator it = table.begin();
   it != table.end(); ++it)
   {  
-    std::cout << it->first << "\n";
+    std::cout << "\nKey: " << it->first << "\nData: ";
     it->second->print();
   }
 }

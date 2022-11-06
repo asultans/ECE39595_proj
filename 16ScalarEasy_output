@@ -1,0 +1,33 @@
+
+Start 0
+PushI  (4)
+GoSub L1(4)
+Jump, 8
+GoSubLabel L1
+PopScalar A, (0)
+PushScalar A, (0)
+Return
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: A
+Data: 
+<0, 1>
+Is it label? 0
+Scope: L1
+
+Key: L1
+Data: 
+<4, 0>
+Is it label? 1
+Scope: L1
+
+Key: L2
+Data: 
+<8, 0>
+Is it label? 1
+Scope: L1
+_____END TEST. PRINT TABLE______
+

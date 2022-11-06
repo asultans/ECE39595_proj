@@ -2,7 +2,9 @@
 #define OPS_H
 
 #include "Stmt.h"
+#include "Symtbl.h"
 #include <iostream>
+#include <fstream>
 
 
 // This file contains classes for all op_codes needed
@@ -16,9 +18,12 @@ class Jump : public Stmt {
 private:
 public:
   Jump(std::string jm);
+  int loc = -1;
   std::string jm;
   int op_add = 16;
   virtual void printData();
+  virtual void serialize(std::fstream &out);
+  virtual void initialize(Symtbl* sym);
 };
 
 // jmpzero
@@ -26,7 +31,10 @@ class Jumpzero : public Stmt {
 private:
 public:
 std::string jmp_z;
+int loc = -1;
 Jumpzero(std::string jmp_z);
+virtual void serialize(std::fstream &out);
+virtual void initialize(Symtbl* sym);
 virtual void printData();
 int op_add = 17;
 };
@@ -36,6 +44,9 @@ class Jump_n : public Stmt {
 private:
 public:
   std::string jmp_n;
+  int loc = -1;
+  virtual void serialize(std::fstream &out);
+  virtual void initialize(Symtbl* sym);
   Jump_n(std::string jmp_n);
   int op_add = 18;
   virtual void printData();
@@ -46,6 +57,7 @@ class gslabel : public Stmt {
 private:
 public:
   std::string name;
+  virtual void serialize(std::fstream &out);
   gslabel(std::string name);
   int op_add = 19;
   virtual void printData();
@@ -60,18 +72,32 @@ public:
   Ret();
   int op_add = 20;
   virtual void printData();
+  virtual void serialize(std::fstream &out);
 };
 
-//  ent_sub is GO_SUB
-class Ent_sub : public Stmt {
-private:
+//  ent_sub 
+// class Ent_sub : public Stmt {
+// private:
+// public:
+//   Ent_sub(std::string label);
+//   std::string label;
+//   int mem;
+//   int op_add = 21;
+//   virtual void printData();
+//   virtual void serialize(std::fstream &out);
+// };
+
+// go sub
+class GoSub : public Stmt {
 public:
-  Ent_sub(std::string label);
+  GoSub(std::string label);
   std::string label;
-  int op_add = 21;
+  int loc;
+  int op_add = 19;
   virtual void printData();
+  virtual void serialize(std::fstream &out);
+  virtual void initialize(Symtbl * sym);
 };
-
 //  start
 class Start : public Stmt {
 private:
@@ -81,6 +107,8 @@ public:
   Start();
   virtual void printData();
   int op_add = 23;
+  virtual void serialize(std::fstream &out);
+  virtual void initialize(Symtbl * sym);
 };
 
 //  exit
@@ -90,6 +118,7 @@ public:
   Exit();
   virtual void printData();
   int op_add = 22;
+  virtual void serialize(std::fstream &out);
 };
 
 //  push_scl
@@ -97,9 +126,11 @@ class Push_scl : public Stmt {
 private:
 public:
   std::string name;
-  Push_scl(std::string name);
+  int loc = -1;
+  Push_scl(std::string name, Symtbl * sym);
   virtual void printData();
   int op_add = 32;
+  virtual void serialize(std::fstream &out);
 };
 
 //  push_arr
@@ -111,6 +142,7 @@ public:
   std::string name;
   int op_add = 33;
   int mem;
+  virtual void serialize(std::fstream &out);
 };
 
 //  push_i
@@ -122,6 +154,7 @@ public:
   virtual void printData();
   Push_i(std::string i);
   int op_add = 34;
+  virtual void serialize(std::fstream &out);
 };
 
 //  pop_scl
@@ -129,9 +162,11 @@ class Pop_scl : public Stmt {
 private:
 public:
   std::string name;
+  int loc = -1;
   virtual void printData();
-  Pop_scl(std::string name);
+  Pop_scl(std::string name, Symtbl * sym);
   int op_add = 48;
+  virtual void serialize(std::fstream &out);
 };
 
 //  pop_arr
@@ -142,6 +177,7 @@ public:
   virtual void printData();
   Pop_arr(std::string name);
   int op_add = 49;
+  virtual void serialize(std::fstream &out);
 };
 
 //  pop
@@ -151,6 +187,7 @@ public:
   virtual void printData();
   Pop();
   int op_add = 50;
+  virtual void serialize(std::fstream &out);
 };
 
 //  dup
@@ -160,6 +197,7 @@ public:
   Dup();
   virtual void printData();
   int op_add = 64;
+  virtual void serialize(std::fstream &out);
 };
 
 //  swap
@@ -169,6 +207,7 @@ public:
   Swap();
   virtual void printData();
   int op_add = 65;
+  virtual void serialize(std::fstream &out);
 };
 
 //  add
@@ -178,6 +217,7 @@ public:
   Add();
   virtual void printData();
   int op_add = 80;
+  virtual void serialize(std::fstream &out);
 };
 
 //  negate
@@ -187,6 +227,7 @@ public:
   Negate();
   virtual void printData();
   int op_add = 81;
+  virtual void serialize(std::fstream &out);
 };
 
 //  mul
@@ -196,6 +237,7 @@ public:
   Mul();
   virtual void printData();
   int op_add = 82;
+  virtual void serialize(std::fstream &out);
 };
 
 //  div
@@ -205,6 +247,7 @@ public:
   Div();
   virtual void printData();
   int op_add = 83;
+  virtual void serialize(std::fstream &out);
 };
 
 //  prints
@@ -215,6 +258,7 @@ public:
   Prints(std::string printed);
   virtual void printData();
   int op_add = 96;
+  virtual void serialize(std::fstream &out);
 };
 
 //  printtos
@@ -224,6 +268,7 @@ public:
   Printtos();
   int op_add = 97;
   virtual void printData();
+  virtual void serialize(std::fstream &out);
 };
 
 #endif

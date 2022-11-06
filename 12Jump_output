@@ -1,0 +1,16 @@
+
+Start 0
+Jump, 3
+Prints this_should_not_print
+Prints this_should_print
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: L1
+Data: 
+<3, 0>
+Is it label? 1
+Scope: Global
+_____END TEST. PRINT TABLE______
+

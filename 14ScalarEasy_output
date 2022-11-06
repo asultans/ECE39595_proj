@@ -1,0 +1,17 @@
+
+Start 1
+PushI  (4)
+PopScalar A, (0)
+PushScalar A, (0)
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: A
+Data: 
+<0, 1>
+Is it label? 0
+Scope: Global
+_____END TEST. PRINT TABLE______
+

@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
+#include <forward_list>
+
 
 using namespace std;
 // need to add exit_subroutine op
@@ -21,15 +23,18 @@ int main(int argc, char *argv[]) {
   // DECLARTIONS
   string line;
   fstream fl;
+  fstream out;
   Symtbl *sym = Symtbl::getSymbolTable();
   Inst_buff *inst_buff = Inst_buff::getInst_buff();
   Str_buff *str_buff = Str_buff::getStr_buff();
   
   // Instantiate Scope
   std::forward_list<std::string> scope;
-  std::forward_list<std::string>::iterator it;
   scope.push_front("Global");
 
+  // Instantiate GoSubTracker
+  std::forward_list<Stmt *> gstrack;
+  
   // test if regex can handle edge cases
   regex scl("(declscal )(.*)+");
   regex arr("(declarr )(.*)+"); 
@@ -47,48 +52,67 @@ int main(int argc, char *argv[]) {
   regex prints("(prints )(.*)+");
   // open file
   fl.open(argv[1]);
-  
+  out.open(argv[2]);
   // read line by line
   while (getline(fl, line)) {
     //printf("in loop\n");
 
-    //START OPS.H ADDED
     if (line.compare("start") == 0) {
       Stmt * start = new Start();
+      start->is_init = false;
       inst_buff->buff.push_back(start);
 
     } 
-    //END OPS.H ADDED
+    
     else if (line.compare("end") == 0) {
-
-      // returns length of vector as unsigned int
+      //patch up all statements with undefined operands
       unsigned int buffSize = inst_buff->buff.size();
       for(unsigned int i = 0; i < buffSize; i++)
       {
-        inst_buff->buff[i]->printData();
+        inst_buff->buff[i]->initialize(sym);
       }
       cout << endl;
       
-      //DONT CREATE STMT
-      //Reached END. PRINT SERIALIZE
+      for(unsigned int i = 0; i < buffSize; i++)
+      {
+        inst_buff->buff[i]->printData();
+        //inst_buff->buff[i]->serialize(out);
+      }
+      cout << endl;
+
       
-      // for(Stmt * i : inst_buff->buff){
-      //   if (!i->is_initialized){
-      //     i->serialize(argv[2]);
-      //   }
-      // }
+      /* TESTING Symbol Table Contents */
+      std::cout << "\n_____TEST. PRINTING SYMBOL TABLE:______";
+      sym->printTable();
+      std::cout << "_____END TEST. PRINT TABLE______\n\n";
     } 
 
     else if (line.compare("exit") == 0) {
+      //cout << "JWHDBCUHW";
       Stmt * exit = new Exit();
       inst_buff->buff.push_back(exit);
-      cout << inst_buff->buff.size();
-      //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
-      //Also fill in all jumps and gosubs
+      
+      // cout << "\nINSTR_BUFF SIZE: " << inst_buff->buff.size() << endl;
+      // //EXIT Encountered. Calculate Memory and store it in the first element of the vector (OP_START)
+      // //Also fill in all jumps and gosubs
       // int startmem = sym->getMemory("Global");
-      //inst_buff->buff.front()->mem = startmem;
-      //inst_buff->buff.front()->is_initialized = true;
-
+      // (dynamic_cast<Start*> (inst_buff->buff.front()))->mem = startmem;
+      // cout << "JWHskvjbnadsfjkbvnlkjadbmDBCUHW";
+      // for (auto & element : inst_buff->buff) 
+      // {
+      //   if (element->getOp() == 19){
+      //     //GOSUB
+      //     cout << "PRINT\n\n\n";
+      //     Data * data = sym->getData((dynamic_cast<GoSub*>(element))->label);
+      //     (dynamic_cast<GoSub*>(element))->loc = data->location;
+      //   }
+      //   if (element->getOp() == 16){
+      //     //JUMP
+      //     Data * data = sym->getData((dynamic_cast<Jump*>(element))->jm);
+      //     (dynamic_cast<Jump*>(element))->loc = data->location;
+      //   }
+        
+      // }
 
       //patch up uninitialized statements
       // for(std::unique_ptr<Stmt> i : inst_buff->buff){
@@ -99,11 +123,22 @@ int main(int argc, char *argv[]) {
     } 
     
     else if (line.compare("return") == 0) {
-
       Stmt * ret = new Ret();
       inst_buff->buff.push_back(ret);
       // update the mem for sub_routine in the inst_buff and put return into
-      inst_buff->buff.push_back(ret);
+      // int mem = sym->getMemory(scope.front());
+      // backtrack in the instruction buffer 
+      // till you find gosublabel
+      // save mem into that object
+
+      
+     //  gotrack.front()->mem = mem;
+     //  gotrack.front() = nullptr;
+     //  gotrack.front
+      
+      }  
+      
+
       
       // for (std::vector<std::unique_ptr<Stmt>>::reverse_iterator i = inst_buff->buff.rbegin(); i != inst_buff->buff.rend(); i++){
       //   if (i->op_add == 19){
@@ -123,7 +158,7 @@ int main(int argc, char *argv[]) {
       
       // //pop scope
       // scope.pop_front();
-    } 
+  
       
     
     else if (line.compare("pop") == 0) {
@@ -175,7 +210,7 @@ int main(int argc, char *argv[]) {
     
     else if (regex_match(line,prints)){
       
-      string printval = line.substr(6,line.length());
+      string printval = line.substr(7,30);
       Stmt * print = new Prints(printval);
       inst_buff->buff.push_back(print);
         
@@ -187,7 +222,7 @@ int main(int argc, char *argv[]) {
       
       //data->print();
 
-      string var = line.substr(7, line.length());
+      string var = line.substr(9, 2);
       sym->putEntry(var, new Data(-1, 1, false, scope.front()));
       
 
@@ -195,52 +230,61 @@ int main(int argc, char *argv[]) {
     
     // Need to figure out how to do this!!!!!
     else if (regex_match(line, arr)) {  
-      // string name = line.substr(7, 8);
-      // int size = stoi(line.substr(8, line.length()));
+
       
-      // Data *data = new Data(-1, size, false, scope.front());
-      // sym->putEntry(name, data);
+      string name = line.substr(8, 1);
+      
+      int mem = stoi(line.substr(9, 2));
+      
+      Data *data = new Data(-1, mem, false, scope.front());
+      if (!sym->putEntry(name, data)){
+        cout<<"Shit didn't work. Put Entry ARR";
+      }
     } 
       
     else if (regex_match(line, lbl)) {
       //whenever we save label to the table the position in the
       //statement buffer is saved as opposed to memory
       
-      string lbl = line.substr(5, line.length());
-      Data *data = new Data(inst_buff->buff.size() + 1, 0, true, scope.front());
+      string lbl = line.substr(6, 10);
+      Data *data = new Data(inst_buff->buff.size(), 0, true, scope.front());
       sym->putEntry(lbl, data);
 
-      std::cout << "\nTEST. PRINTING TABLE:______";
-      sym->printTable();
-      std::cout << "END TEST. PRINT TABLE\n\n";
+      
 
     } 
     else if (regex_match(line, gsl)) {
-      // string gosub = line.substr(10, line.length());
-      // Data * data = new Data(getStatementLine, 0, true, scope.front());
-      // data->print();
-      // sym->putEntry(gosub, data);
-      
+      string label = line.substr(11, 10);
+      //change the scope to the new label
+      scope.push_front(label);
+      //save to symbol table
+      Data * data = new Data(inst_buff->buff.size(), 0, true, scope.front());
+      Stmt * goSubLabel = new gslabel(label);
+      inst_buff->buff.push_back(goSubLabel);
+      sym->putEntry(label, data);
     } 
     
     else if (regex_match(line, jmp)) {
-      string jm = line.substr(4,line.length());
+      string jm = line.substr(5,10);
       Stmt * jump = new Jump(jm);
+      jump->is_init = false;
       inst_buff->buff.push_back(jump);
       
     } 
     
     else if (regex_match(line, jmp_z)) {
-      string jmpz = line.substr(8,line.length());
+      string jmpz = line.substr(9,10);
       Stmt * jump_z = new Jumpzero(jmpz);
+      jump_z->is_init = false;
       inst_buff->buff.push_back(jump_z);
       
 
     } 
     
     else if (regex_match(line, jmp_n)) {
-      string jmpn = line.substr(9,line.length());
+      string jmpn = line.substr(10,10);
       Stmt * jmp = new Jump_n(jmpn); 
+      jmp->is_init = false;
       inst_buff->buff.push_back(jmp);
       
       
@@ -248,25 +292,25 @@ int main(int argc, char *argv[]) {
     } 
     
     else if (regex_match(line, gs)) {
-      // encountered Gosub. CHANGE SCOPE.
-      std::string label = line.substr(10, line.length());
-      Stmt * go = new Ent_sub(label);
-      inst_buff->buff.push_back(go);
+      // encountered Gosub. DONT change the scope.
+      std::string label = line.substr(6, 2);
+      Stmt * goSub = new GoSub(label);
+      goSub->is_init = false;
+      inst_buff->buff.push_back(goSub);
 
+      //gstracker.push_front(goSub);
     } 
     
     else if (regex_match(line, psh_scl)) {
-      string scl = line.substr(8,line.length());
-      Stmt * psh_sl = new Push_scl(scl); 
+      string scl = line.substr(9,10);
+      Stmt * psh_sl = new Push_scl(scl, sym); 
       inst_buff->buff.push_back(psh_sl);
-    
-
     } 
     
     else if (regex_match(line, psh_arr)) {
       // need to also get the mem amount 
       string name = line.substr(8,9);
-      int mem = stoi(line.substr(9,line.length()));
+      int mem = stoi(line.substr(9,2));
       Stmt * psh_a = new Push_arr(name, mem);
       
       // need to do regex to find size 
@@ -276,24 +320,22 @@ int main(int argc, char *argv[]) {
       } 
     
     else if (regex_match(line, psh_i)) {
-      //printf("pushi\n");
-      string i = line.substr(5,line.length());
+      string i = line.substr(6,1);
       Stmt * push_i = new Push_i(i);
       inst_buff->buff.push_back(push_i);
 
     } 
     
     else if (regex_match(line, pop_scl)) {
-      printf("pop_scl\n");
-      string var = line.substr(8,line.length());
-      Stmt * pop_scal = new Pop_scl(var);
+      string var = line.substr(8,2);
+      Stmt * pop_scal = new Pop_scl(var, sym);
       inst_buff->buff.push_back(pop_scal);
-      // inst_buff->buff.push_back(pop_scl);
+      
     } 
     
     else if (regex_match(line, pop_arr)) {
       
-      string var = line.substr(7,line.length());
+      string var = line.substr(7,2);
       Stmt * pop_arr = new Pop_arr(var);
       inst_buff->buff.push_back(pop_arr);
 
@@ -302,9 +344,11 @@ int main(int argc, char *argv[]) {
     // did not match a command return an error command
     else {
       printf("line does not match any commands\n");
+      
     }
   }
   // end of while
-
+  out.close();
+  fl.close();
   return 0;
 };
