@@ -125,17 +125,9 @@ int main(int argc, char *argv[]) {
     else if (line.compare("return") == 0) {
       Stmt * ret = new Ret();
       inst_buff->buff.push_back(ret);
-      // update the mem for sub_routine in the inst_buff and put return into
-      // int mem = sym->getMemory(scope.front());
-      // backtrack in the instruction buffer 
-      // till you find gosublabel
-      // save mem into that object
 
-      
-     //  gotrack.front()->mem = mem;
-     //  gotrack.front() = nullptr;
-     //  gotrack.front
-      
+      //return to the old scope
+      scope.pop_front();
       }  
       
 
@@ -223,7 +215,17 @@ int main(int argc, char *argv[]) {
       //data->print();
 
       string var = line.substr(9, 2);
-      sym->putEntry(var, new Data(-1, 1, false, scope.front()));
+      if (!sym->putEntry(var, new Data(-1, 1, false, scope.front()))){
+        //insert failed because the same entry key already exsits.
+        // check if the scope is the same
+        if (sym->getData(var)->scope == scope.front()){
+          cout << "\nError: trying to insert a variable with the same name in the same scope. Var Name: " << var << "\nScope: " << scope.front();
+        }
+        else {
+          //scope is different. insert by appending scope name
+          sym->putEntry(var + "_" + scope.front(), new Data(-1, 1, false, scope.front()));
+        }
+      }
       
 
     } 
@@ -255,13 +257,13 @@ int main(int argc, char *argv[]) {
     } 
     else if (regex_match(line, gsl)) {
       string label = line.substr(11, 10);
-      //change the scope to the new label
-      scope.push_front(label);
       //save to symbol table
       Data * data = new Data(inst_buff->buff.size(), 0, true, scope.front());
       Stmt * goSubLabel = new gslabel(label);
       inst_buff->buff.push_back(goSubLabel);
       sym->putEntry(label, data);
+      //change the scope to the new label
+      scope.push_front(label);
     } 
     
     else if (regex_match(line, jmp)) {
@@ -303,8 +305,17 @@ int main(int argc, char *argv[]) {
     
     else if (regex_match(line, psh_scl)) {
       string scl = line.substr(9,10);
-      Stmt * psh_sl = new Push_scl(scl, sym); 
-      inst_buff->buff.push_back(psh_sl);
+      //check if we are in a subroutine
+      if (scope.front() == "Global") {
+        //Not in a subroutine. Nothing new
+        Stmt * psh_sl = new Push_scl(scl, sym); 
+        inst_buff->buff.push_back(psh_sl);
+      }
+      else {
+        //we are in a subroutine. Append scope to variable search
+        Stmt * psh_sl = new Push_scl(scl + "_" + scope.front(), sym);
+        inst_buff->buff.push_back(psh_sl);
+      }
     } 
     
     else if (regex_match(line, psh_arr)) {
@@ -328,8 +339,19 @@ int main(int argc, char *argv[]) {
     
     else if (regex_match(line, pop_scl)) {
       string var = line.substr(8,2);
-      Stmt * pop_scal = new Pop_scl(var, sym);
-      inst_buff->buff.push_back(pop_scal);
+      //check if we are in a subroutine
+      if (scope.front() == "Global") {
+        //Not in a subroutine. Nothing new
+        Stmt * pop_scal = new Pop_scl(var, sym);
+        inst_buff->buff.push_back(pop_scal);
+      }
+      else {
+        //we are in a subroutine. Append scope to variable search
+        Stmt * pop_scal = new Pop_scl(var + "_" + scope.front(), sym);
+        inst_buff->buff.push_back(pop_scal);
+      }
+      
+      
       
     } 
     

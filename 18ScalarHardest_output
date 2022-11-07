@@ -1,0 +1,58 @@
+element A already existed with a value of: (location:0, length:1)
+element B already existed with a value of: (location:1, length:1)
+
+Start 2
+GoSub L1(3)
+Jump, 11
+GoSubLabel L1
+PushI  (4)
+PushI  (8)
+PopScalar A, (2)
+PopScalar B, (3)
+PushScalar A, (2)
+PushScalar B, (3)
+Return
+PrintTOS
+Pop
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: A
+Data: 
+<0, 1>
+Is it label? 0
+Scope: Global
+
+Key: A_L1
+Data: 
+<2, 1>
+Is it label? 0
+Scope: L1
+
+Key: B
+Data: 
+<1, 1>
+Is it label? 0
+Scope: Global
+
+Key: B_L1
+Data: 
+<3, 1>
+Is it label? 0
+Scope: L1
+
+Key: L1
+Data: 
+<3, 0>
+Is it label? 1
+Scope: Global
+
+Key: L2
+Data: 
+<11, 0>
+Is it label? 1
+Scope: Global
+_____END TEST. PRINT TABLE______
+

@@ -1,4 +1,6 @@
 #include "ops.h"
+#include <regex>
+#include <string.h>
 
 Jump::Jump(std::string jm_): jm(jm_){};
 void Jump::printData(){
@@ -170,7 +172,10 @@ Push_scl::Push_scl(std::string name_, Symtbl * sym) : name(name_)
     return;
 };
 void Push_scl::printData(){
-  std::cout << "PushScalar " << name << ", (" << loc << ")\n";
+  //regex match everything before _
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PushScalar " << out << ", (" << loc << ")\n";
 };
 void Push_scl::serialize(std::fstream &out){
   out << "PushScalar " << name << ", (" << loc << ")\n";
@@ -205,7 +210,9 @@ Pop_scl::Pop_scl(std::string name_, Symtbl * sym): name(name_)
     return;
 };
 void Pop_scl::printData(){
-  std::cout << "PopScalar " << name << ", (" << loc << ")\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PopScalar " << out << ", (" << loc << ")\n";
 };
 void Pop_scl::serialize(std::fstream &out){
   out << "PopScalar " << name << ", (" << loc << ")\n";

@@ -1,0 +1,56 @@
+
+The following key not found A_L1
+
+Pop_scl::constructor ERROR. Label A_L1 is not in the Symbol Table. getData returned nullptr!
+The following key not found B_L1
+
+Pop_scl::constructor ERROR. Label B_L1 is not in the Symbol Table. getData returned nullptr!
+The following key not found A_L1
+
+Push_scl::constructor ERROR. Label A_L1 is not in the Symbol Table. getData returned nullptr!
+The following key not found B_L1
+
+Push_scl::constructor ERROR. Label B_L1 is not in the Symbol Table. getData returned nullptr!
+Start 0
+GoSub L1(3)
+Jump, 11
+GoSubLabel L1
+PushI  (4)
+PushI  (8)
+PopScalar A, (-1)
+PopScalar B, (-1)
+PushScalar A, (-1)
+PushScalar B, (-1)
+Return
+PrintTOS
+Pop
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: A
+Data: 
+<0, 1>
+Is it label? 0
+Scope: L1
+
+Key: B
+Data: 
+<1, 1>
+Is it label? 0
+Scope: L1
+
+Key: L1
+Data: 
+<3, 0>
+Is it label? 1
+Scope: Global
+
+Key: L2
+Data: 
+<11, 0>
+Is it label? 1
+Scope: Global
+_____END TEST. PRINT TABLE______
+

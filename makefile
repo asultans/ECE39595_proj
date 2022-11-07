@@ -65,7 +65,7 @@ testScalarEasy: Proj_stp1
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/16ScalarEasy > 16ScalarEasy_output
 
 
-testScalerHard: Proj_stp1
+testScalarHard: Proj_stp1
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/15ScalarHard > 15ScalarHard_output
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/17ScalarHard > 17ScalarHard_output
 	./Proj_stp1 ProjectAssigned/OutputAndTestCases/TestCases10_08_22/18ScalarHardest > 18ScalarHardest_output
