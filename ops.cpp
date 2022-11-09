@@ -181,12 +181,25 @@ void Push_scl::serialize(std::fstream &out){
   out << "PushScalar " << name << ", (" << loc << ")\n";
 };
 
-Push_arr::Push_arr(std::string name_, int mem_) : name(name_), mem(mem_){};
+Push_arr::Push_arr(std::string name_, Symtbl * sym) : name(name_)
+{
+  if (sym->getData(name_) == nullptr){
+      std::cout << "\nPush_arr::constructor ERROR. Label " << name << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name_))->location;
+    }
+    is_init = true;
+    return;
+};
 void Push_arr::printData(){
-  std::cout << "PushArray " << name << ", (" << mem <<")\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PushArray " << out << ", (" << loc <<")\n";
 };
 void Push_arr::serialize(std::fstream &out){
-  out << "PushArray " << name << ", (" << mem <<")\n";
+  out << "PushArray " << name << ", (" << loc <<")\n";
 };
 
 Push_i::Push_i(std::string i_) : i(i_){};
@@ -218,12 +231,25 @@ void Pop_scl::serialize(std::fstream &out){
   out << "PopScalar " << name << ", (" << loc << ")\n";
 };
 
-Pop_arr::Pop_arr(std::string name_): name(name_){};
+Pop_arr::Pop_arr(std::string name_, Symtbl * sym): name(name_)
+{
+  if (sym->getData(name_) == nullptr){
+      std::cout << "\nPop_arr::constructor ERROR. Label " << name_ << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name_))->location;
+    }
+    is_init = true;
+    return;
+};
 void Pop_arr::printData(){
-  std::cout<<"Pop_arr " << name << "\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout<<"Pop_arr " << out << ", (" << loc <<")\n";
 };
 void Pop_arr::serialize(std::fstream &out){
-  out << "Pop_arr " << name <<"\n";
+  out << "Pop_arr " << name << ", (" << loc <<")\n";
 };
 
 Pop::Pop(){};

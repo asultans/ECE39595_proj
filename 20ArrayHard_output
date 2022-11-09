@@ -1,0 +1,26 @@
+
+Start 4
+PushI  (4)
+PushI  (8)
+PushI  (1)
+Pop_arr A, (0)
+PushI  (2)
+Pop_arr A, (0)
+PushI  (1)
+PushArray A, (0)
+PushI  (2)
+PushArray A, (0)
+PrintTOS
+Pop
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: [A]
+Data: 
+<0, 4>
+Is it label? 0
+Scope: Global
+_____END TEST. PRINT TABLE______
+

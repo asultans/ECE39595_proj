@@ -1,13 +1,18 @@
 
-Start 1
-Return
+Start 3
+PushI  (4)
+PushI  (2)
+Pop_arr A, (0)
+PushI  (2)
+PushArray A, (0)
+PrintTOS
 Exit
 
 
 _____TEST. PRINTING SYMBOL TABLE:______
 Key: [A]
 Data: 
-<0, 1>
+<0, 3>
 Is it label? 0
 Scope: Global
 _____END TEST. PRINT TABLE______

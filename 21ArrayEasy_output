@@ -1,0 +1,37 @@
+
+Pop_arr::constructor ERROR. Label A_L1 is not in the Symbol Table. getData returned nullptr!
+Push_arr::constructor ERROR. Label A_L1 is not in the Symbol Table. getData returned nullptr!
+Start 0
+PushI  (99)
+GoSub L1(4)
+Jump, 10
+GoSubLabel L1
+PushI  (1)
+Pop_arr A, (-1)
+PushI  (1)
+PushArray A, (-1)
+Return
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: [A]
+Data: 
+<0, 3>
+Is it label? 0
+Scope: L1
+
+Key: [L1]
+Data: 
+<4, 0>
+Is it label? 1
+Scope: Global
+
+Key: [L2]
+Data: 
+<10, 0>
+Is it label? 1
+Scope: Global
+_____END TEST. PRINT TABLE______
+

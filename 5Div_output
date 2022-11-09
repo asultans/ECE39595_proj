@@ -3,7 +3,7 @@ Start 0
 PushI  (6)
 PushI  (2)
 Div
-Print  6/2=
+Prints 6/2=
 PrintTOS
 Exit
 

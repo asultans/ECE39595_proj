@@ -1,0 +1,56 @@
+
+Start 0
+PushI  (3)
+GoSub FIB(5)
+PrintTOS
+Jump, 21
+GoSubLabel FIB
+Prints in_FIB
+Dup
+PopScalar A, (0)
+PushI  (1)
+Negate
+Add
+Dup
+Jumpzero, FIBL0, (18)
+GoSub FIB(5)
+PushScalar A, (0)
+Mul Jump, 20
+Pop
+PushI  (1)
+Return
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: [A]
+Data: 
+<0, 1>
+Is it label? 0
+Scope: FIB
+
+Key: [EXIT]
+Data: 
+<21, 0>
+Is it label? 1
+Scope: Global
+
+Key: [FIB]
+Data: 
+<5, 0>
+Is it label? 1
+Scope: Global
+
+Key: [FIBL0]
+Data: 
+<18, 0>
+Is it label? 1
+Scope: FIB
+
+Key: [FIBL1]
+Data: 
+<20, 0>
+Is it label? 1
+Scope: FIB
+_____END TEST. PRINT TABLE______
+

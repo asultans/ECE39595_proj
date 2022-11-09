@@ -29,7 +29,7 @@ Data *Symtbl::getData(std::string key) {
         return e.second; // found key return value pair
       }
     }
-    std::cout << "\nThe following key not found " << key << std::endl;
+    //std::cout << "\nThe following key not found " << key << std::endl;
     // throw std::invalid_argument(
     //     "getData::error key wasn't found"); // key wasn't found
     return nullptr;
@@ -39,8 +39,8 @@ Data *Symtbl::getData(std::string key) {
 bool Symtbl::putEntry(std::string key, Data *data) {
 
   if(!data->is_label && data->location != -1){
-    std::cout << "is_label: " << data->is_label <<" | loc:" << data->location;
     std::cout << "\nERROR variable location is improperly initialized. Main->Symtbl::putEntry";
+    std::cout << "\nis_label: " << data->is_label <<" | loc:" << data->location << "\n\n";
     return false;
   }
   
@@ -52,7 +52,7 @@ bool Symtbl::putEntry(std::string key, Data *data) {
   std::pair<std::map<std::string, Data *>::iterator, bool> ret;
   ret = table.insert({key, data});
   if (ret.second == false) {
-    std::cout << "element " << key << " already existed";
+    std::cout << "\nElement " << key << " already existed";
     std::cout << " with a value of: (location:" << ret.first->second->location
               << ", length:" << ret.first->second->length << ")" << '\n';
     return false;
@@ -77,7 +77,7 @@ void Symtbl::printTable(){
   for(std::map<std::string, Data*>::const_iterator it = table.begin();
   it != table.end(); ++it)
   {  
-    std::cout << "\nKey: " << it->first << "\nData: ";
+    std::cout << "\nKey: [" << it->first << "]\nData: ";
     it->second->print();
   }
 }

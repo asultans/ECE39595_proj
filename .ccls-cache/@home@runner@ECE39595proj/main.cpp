@@ -215,6 +215,7 @@ int main(int argc, char *argv[]) {
       //data->print();
 
       string var = line.substr(9, 2);
+      
       if (!sym->putEntry(var, new Data(-1, 1, false, scope.front()))){
         //insert failed because the same entry key already exsits.
         // check if the scope is the same
@@ -229,20 +230,29 @@ int main(int argc, char *argv[]) {
       
 
     } 
-    
-    // Need to figure out how to do this!!!!!
-    else if (regex_match(line, arr)) {  
-
-      
+    //declarr
+    else if (regex_match(line, arr)) 
+    {
       string name = line.substr(8, 1);
+      string mem_str = line.substr(10, 1);
+      int mem = stoi(mem_str);
       
-      int mem = stoi(line.substr(9, 2));
-      
-      Data *data = new Data(-1, mem, false, scope.front());
-      if (!sym->putEntry(name, data)){
-        cout<<"Shit didn't work. Put Entry ARR";
+      if (!(sym->getData(name) == nullptr)){
+        //such data entry already exists
+        //check if the scope is the same
+        if (sym->getData(name)->scope == scope.front()){
+          cout << "\nError: trying to insert a variable with the same name in the same scope. Var Name: " << name << "\nScope: " << scope.front();
+        }
+        if(!sym->putEntry(name + "_" + scope.front(), new Data(-1, mem, false, scope.front()))){
+          cout << "\nError. Something cursed happened in declarr\n";
+        }
       }
-    } 
+      else {
+        //add new data entry
+        sym->putEntry(name, new Data(-1, mem, false, scope.front()));
+      }
+    }
+    
       
     else if (regex_match(line, lbl)) {
       //whenever we save label to the table the position in the
@@ -320,18 +330,22 @@ int main(int argc, char *argv[]) {
     
     else if (regex_match(line, psh_arr)) {
       // need to also get the mem amount 
-      string name = line.substr(8,9);
-      int mem = stoi(line.substr(9,2));
-      Stmt * psh_a = new Push_arr(name, mem);
-      
-      // need to do regex to find size 
-      
-      inst_buff->buff.push_back(psh_a);
-      
-      } 
+      string name = line.substr(8,1);
+      //check if we are in a subroutine
+      if (scope.front() == "Global") {
+        //Not in a subroutine. Nothing new
+        Stmt * psh_arr = new Push_arr(name, sym); 
+        inst_buff->buff.push_back(psh_arr);
+      }
+      else {
+        //we are in a subroutine. Append scope to variable search
+        Stmt * psh_arr = new Push_arr(name + "_" + scope.front(), sym);
+        inst_buff->buff.push_back(psh_arr);
+      }  
+    } 
     
     else if (regex_match(line, psh_i)) {
-      string i = line.substr(6,1);
+      string i = line.substr(6,10);
       Stmt * push_i = new Push_i(i);
       inst_buff->buff.push_back(push_i);
 
@@ -347,20 +361,35 @@ int main(int argc, char *argv[]) {
       }
       else {
         //we are in a subroutine. Append scope to variable search
-        Stmt * pop_scal = new Pop_scl(var + "_" + scope.front(), sym);
-        inst_buff->buff.push_back(pop_scal);
+        //first check if the same variable exists in the current scope
+        //if not, then add it to the scope
+        if (sym->getData(var)->scope == scope.front()){
+          //this variable was initiallized in the current scope
+          Stmt * pop_scal = new Pop_scl(var, sym);
+          inst_buff->buff.push_back(pop_scal);
+        }
+        else{
+          //such variable name already exists therefore append scope name
+          //to the variable name
+          Stmt * pop_scal = new Pop_scl(var + "_" + scope.front(), sym);
+          inst_buff->buff.push_back(pop_scal);
+        }  
       }
-      
-      
-      
     } 
     
     else if (regex_match(line, pop_arr)) {
-      
-      string var = line.substr(7,2);
-      Stmt * pop_arr = new Pop_arr(var);
-      inst_buff->buff.push_back(pop_arr);
-
+      string name = line.substr(7,1);
+      //check if we are in a subroutine
+      if (scope.front() == "Global") {
+        //Not in a subroutine. Nothing new
+        Stmt * pop_arr = new Pop_arr(name, sym); 
+        inst_buff->buff.push_back(pop_arr);
+      }
+      else {
+        //we are in a subroutine. Append scope to variable search
+        Stmt * pop_arr = new Pop_arr(name + "_" + scope.front(), sym);
+        inst_buff->buff.push_back(pop_arr);
+      } 
     }
 
     // did not match a command return an error command

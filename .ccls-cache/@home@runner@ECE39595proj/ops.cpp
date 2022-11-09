@@ -1,4 +1,6 @@
 #include "ops.h"
+#include <regex>
+#include <string.h>
 
 Jump::Jump(std::string jm_): jm(jm_){};
 void Jump::printData(){
@@ -36,7 +38,7 @@ void Mul::serialize(std::fstream &out){
 
 Jumpzero::Jumpzero(std::string jmp_z_): jmp_z(jmp_z_){};
 void Jumpzero::printData(){
-  std::cout<< "Jumpzero " <<  jmp_z << "\n";
+  std::cout<< "Jumpzero, " <<  jmp_z << ", (" << loc << ")\n";
 };
 void Jumpzero::serialize(std::fstream &out){
   out << "Jumpzero " << jmp_z << "\n";
@@ -62,7 +64,7 @@ void Jumpzero::initialize(Symtbl * sym){
 
 Jump_n::Jump_n(std::string jmp_n_): jmp_n(jmp_n_){};
 void Jump_n::printData(){
-  std::cout << "JumpNZero " << jmp_n << "\n";
+  std::cout << "JumpNZero " << jmp_n << ", (" << loc << ")\n";
 };
 void Jump_n::serialize(std::fstream &out){
   out << "JumpNZero " << jmp_n << "\n";
@@ -117,6 +119,24 @@ void GoSub::printData(){
 void GoSub::serialize(std::fstream &out){
   out << "GoSub " << label << "(" << loc << ")\n";
 };
+void GoSub::initialize(Symtbl * sym){
+  if (!is_init) {
+    //uninitialized -> patch up
+    if (sym->getData(label) == nullptr){
+      std::cout << "\nJump::initialize ERROR. Label " << label << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(label))->location;
+    }
+    is_init = true;
+    return;
+  }
+  else 
+  {
+    std::cout << "\ninitalize called on Jump but it has been initialized already: " << label;
+  }
+}
 
 
 Start::Start(){};
@@ -126,6 +146,10 @@ void Start::printData(){
 void Start::serialize(std::fstream &out){
   out << "Start " << mem << "\n";
 };
+void Start::initialize(Symtbl * sym){
+  mem = sym->getMemory("Global");
+  is_init = true;
+}
 //check if this is pushed to inst_buff
 Exit::Exit(){};
 void Exit::printData(){
@@ -135,20 +159,47 @@ void Exit::serialize(std::fstream &out){
   out << "Exit\n";
 };
 
-Push_scl::Push_scl(std::string name_) : name(name_){};
+Push_scl::Push_scl(std::string name_, Symtbl * sym) : name(name_)
+{
+  if (sym->getData(name) == nullptr){
+      std::cout << "\nPush_scl::constructor ERROR. Label " << name << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name))->location;
+    }
+    is_init = true;
+    return;
+};
 void Push_scl::printData(){
-  std::cout << "Push_scl " << name << "\n";
+  //regex match everything before _
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PushScalar " << out << ", (" << loc << ")\n";
 };
 void Push_scl::serialize(std::fstream &out){
-  out << "Push_scl " << name << "\n";
+  out << "PushScalar " << name << ", (" << loc << ")\n";
 };
 
-Push_arr::Push_arr(std::string name_, int mem_) : name(name_), mem(mem_){};
+Push_arr::Push_arr(std::string name_, Symtbl * sym) : name(name_)
+{
+  if (sym->getData(name_) == nullptr){
+      std::cout << "\nPush_arr::constructor ERROR. Label " << name << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name_))->location;
+    }
+    is_init = true;
+    return;
+};
 void Push_arr::printData(){
-  std::cout << "PushArray " << name << ", (" << mem <<")\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PushArray " << out << ", (" << loc <<")\n";
 };
 void Push_arr::serialize(std::fstream &out){
-  out << "PushArray " << name << ", (" << mem <<")\n";
+  out << "PushArray " << name << ", (" << loc <<")\n";
 };
 
 Push_i::Push_i(std::string i_) : i(i_){};
@@ -159,20 +210,46 @@ void Push_i::serialize(std::fstream &out){
   out << "PushI  (" << i << ")\n";
 };
 
-Pop_scl::Pop_scl(std::string name_): name(name_){};
+Pop_scl::Pop_scl(std::string name_, Symtbl * sym): name(name_)
+{
+  if (sym->getData(name) == nullptr){
+      std::cout << "\nPop_scl::constructor ERROR. Label " << name << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name))->location;
+    }
+    is_init = true;
+    return;
+};
 void Pop_scl::printData(){
-  std::cout << "Pop_scl " << name << "\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout << "PopScalar " << out << ", (" << loc << ")\n";
 };
 void Pop_scl::serialize(std::fstream &out){
-  out << "Pop_scl " << name << "\n";
+  out << "PopScalar " << name << ", (" << loc << ")\n";
 };
 
-Pop_arr::Pop_arr(std::string name_): name(name_){};
+Pop_arr::Pop_arr(std::string name_, Symtbl * sym): name(name_)
+{
+  if (sym->getData(name_) == nullptr){
+      std::cout << "\nPop_arr::constructor ERROR. Label " << name_ << " is not in the Symbol Table. getData returned nullptr!";
+      return;
+    }
+    else {
+      loc = (sym->getData(name_))->location;
+    }
+    is_init = true;
+    return;
+};
 void Pop_arr::printData(){
-  std::cout<<"Pop_arr " << name << "\n";
+  std::regex yessirski("_(.*)");
+  std::string out = regex_replace(name, yessirski, "");
+  std::cout<<"Pop_arr " << out << ", (" << loc <<")\n";
 };
 void Pop_arr::serialize(std::fstream &out){
-  out << "Pop_arr " << name <<"\n";
+  out << "Pop_arr " << name << ", (" << loc <<")\n";
 };
 
 Pop::Pop(){};
@@ -225,10 +302,10 @@ void Div::serialize(std::fstream &out){
 
 Prints::Prints(std::string printed_): printed(printed_){};
 void Prints::printData(){
-  std::cout << "Print " << printed << "\n";
+  std::cout << "Prints " << printed << "\n";
 };
 void Prints::serialize(std::fstream &out){
-  out << "Print " << printed << "\n";
+  out << "Prints " << printed << "\n";
 };
 Printtos::Printtos(){};
 void Printtos::printData(){

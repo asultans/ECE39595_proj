@@ -1,0 +1,82 @@
+
+Start 10
+PushI  (0)
+PopScalar C, (8)
+PushI  (4)
+PopScalar I, (9)
+PushScalar I, (9)
+PushI  (1)
+Negate
+Add
+Dup
+PopScalar I, (9)
+Dup
+Pop_arr A, (0)
+PushScalar I, (9)
+PushI  (4)
+Add
+PushScalar I, (9)
+Pop_arr B, (4)
+PushScalar I, (9)
+JumpNZero LOOPTOP1, (5)
+PushI  (4)
+PopScalar I, (9)
+PushScalar I, (9)
+PushI  (1)
+Negate
+Add
+Dup
+PopScalar I, (9)
+Dup
+PushArray A, (0)
+Swap
+PushArray B, (4)
+Mul PushScalar C, (8)
+Add
+PopScalar C, (8)
+PushScalar I, (9)
+JumpNZero LOOPTOP2, (22)
+PushScalar C, (8)
+Prints dot_product_value_is:
+PrintTOS
+Exit
+
+
+_____TEST. PRINTING SYMBOL TABLE:______
+Key: [A]
+Data: 
+<0, 4>
+Is it label? 0
+Scope: Global
+
+Key: [B]
+Data: 
+<4, 4>
+Is it label? 0
+Scope: Global
+
+Key: [C]
+Data: 
+<8, 1>
+Is it label? 0
+Scope: Global
+
+Key: [I]
+Data: 
+<9, 1>
+Is it label? 0
+Scope: Global
+
+Key: [LOOPTOP1]
+Data: 
+<5, 0>
+Is it label? 1
+Scope: Global
+
+Key: [LOOPTOP2]
+Data: 
+<22, 0>
+Is it label? 1
+Scope: Global
+_____END TEST. PRINT TABLE______
+

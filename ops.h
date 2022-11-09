@@ -137,11 +137,11 @@ public:
 class Push_arr : public Stmt {
 private:
 public:
-  Push_arr(std::string name_, int mem);
+  Push_arr(std::string name_, Symtbl * sym);
   virtual void printData();
   std::string name;
   int op_add = 33;
-  int mem;
+  int loc = -1;
   virtual void serialize(std::fstream &out);
 };
 
@@ -174,8 +174,9 @@ class Pop_arr : public Stmt {
 private:
 public:
   std::string name;
+  int loc = -1;
   virtual void printData();
-  Pop_arr(std::string name);
+  Pop_arr(std::string name, Symtbl * sym);
   int op_add = 49;
   virtual void serialize(std::fstream &out);
 };
